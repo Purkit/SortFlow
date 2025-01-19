@@ -4,7 +4,7 @@ import sys
 import time
 
 from PySide6.QtCore import QProcess, QUrl, Signal, Slot
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, Qt
 from PySide6.QtMultimedia import QMediaPlayer
 from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWidgets import (
@@ -32,19 +32,50 @@ class MainPage(QWidget):
         self.setWindowTitle("SortFlow")
         self.setWindowIcon(QIcon("icon.png"))
 
-        layout = QVBoxLayout()
         title_label = QLabel("SortFlow")
         title_label.setStyleSheet(
-            "font-size: 40px; font-weight: bold; text-align: center;"
+            "font-size: 80px; font-weight: bold; text-align: center;"
         )
+
         start_button = QPushButton("Start")
+        start_button.setStyleSheet(
+            """
+            QPushButton {
+                font-size: 16px;
+                padding: 15px 60px;
+                background-color: #4CAF50;
+                color: white;
+                border-radius: 10px;
+                border: none;
+                outline: none;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+            QPushButton:pressed {
+                background-color: #387c3a;
+            }
+        """
+        )
         start_button.clicked.connect(
             self.start_clicked.emit
         )  # Emit the signal when clicked
 
-        layout.addWidget(title_label)
-        layout.addWidget(start_button)
-        self.setLayout(layout)
+        v_layout = QVBoxLayout()
+
+        v_layout.addWidget(title_label)
+        v_layout.setAlignment(
+            title_label,
+            Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignBottom,
+        )
+
+        v_layout.addWidget(start_button)
+        v_layout.setAlignment(
+            start_button,
+            Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop,
+        )
+
+        self.setLayout(v_layout)
 
 
 class AlgorithmPage(QWidget):
