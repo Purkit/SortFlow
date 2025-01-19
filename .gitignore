@@ -4,3 +4,5 @@ icon.png
 .mp4
 user_array.py
 video_test.py
+animations/__pycache__/
+animations/media/*
