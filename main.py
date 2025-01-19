@@ -84,7 +84,8 @@ class AlgorithmPage(QWidget):
     def __init__(self):
         super().__init__()
 
-        layout = QVBoxLayout()
+        request_test = QLabel("Select a sorting algorithm...")
+
         self.algorithm_list = QComboBox()
         self.algorithm_list.addItems(
             ["Bubble Sort", "Selection Sort", "Insertion Sort"]
@@ -93,11 +94,65 @@ class AlgorithmPage(QWidget):
         select_button = QPushButton("Select Algorithm")
         select_button.clicked.connect(self.select_algorithm)
 
-        layout.addWidget(QLabel("Select Sorting Algorithm"))
-        layout.addWidget(self.algorithm_list)
-        layout.addWidget(select_button)
+        style = """
+            QLabel {
+                font-size: 40px;
+                font-weight: bold;
+                color: #ffffff;
+            }
+            QPushButton {
+                font-size: 16px;
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border-radius: 10px;
+                border: none;
+                outline: none;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+            QPushButton:pressed {
+                background-color: #387c3a;
+            }
+            QComboBox {
+                font-size: 14px;
+                padding: 5px 90px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            QComboBox:hover {
+                border-color: #4CAF50;
+            }
+            QComboBox:focus {
+                border-color: #4CAF50;
+            }
+            QComboBox QAbstractItemView {
+                border: 1px solid #ccc;
+                selection-background-color: #4CAF50;
+                selection-color: white;
+            }
+        """
+        self.setStyleSheet(style)
 
-        self.setLayout(layout)
+        v_layout = QVBoxLayout()
+
+        v_layout.addWidget(request_test)
+        v_layout.setAlignment(request_test, Qt.AlignmentFlag.AlignCenter)
+
+        v_layout.addWidget(self.algorithm_list)
+        v_layout.setAlignment(
+            self.algorithm_list,
+            Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop,
+        )
+
+        v_layout.addWidget(select_button)
+        v_layout.setAlignment(
+            select_button,
+            Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignTop,
+        )
+
+        self.setLayout(v_layout)
 
     def select_algorithm(self):
         selected_algorithm = self.algorithm_list.currentText()
