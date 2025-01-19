@@ -167,35 +167,86 @@ class InputPage(QWidget):
     def __init__(self):
         super().__init__()
 
-        layout = QVBoxLayout()
+        request_text_label = QLabel("Enter List of Numbers to Sort")
+
         self.number_input = QLineEdit()
         self.number_input.setPlaceholderText(
             "Enter a list of numbers (comma separated)"
         )
 
-        go_button = QPushButton("Write Array")
+        go_button = QPushButton("Generate Animation")
         go_button.clicked.connect(self.write_array_to_module)
+        style = """
+            QLabel {
+                font-size: 25px;
+                color: #ffffff;
+                margin-bottom: 20px;
+            }
+            QPushButton {
+                font-size: 16px;
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border-radius: 10px;
+                border: none;
+                outline: none;
+            }
+            QPushButton:hover {
+                background-color: #45a049;
+            }
+            QPushButton:pressed {
+                background-color: #387c3a;
+            }
+            QLineEdit {
+                font-size: 14px;
+                padding: 8px 200px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            QLineEdit:focus {
+                border-color: #4CAF50;
+            }
+        """
+        self.setStyleSheet(style)
 
-        layout.addWidget(QLabel("Enter List of Numbers to Sort"))
-        layout.addWidget(self.number_input)
-        layout.addWidget(go_button)
+        h_layout = QHBoxLayout()
+        v_layout = QVBoxLayout()
 
-        # Add a status label to show if the file is written successfully
+        h_layout.addWidget(request_text_label)
+        h_layout.setAlignment(request_text_label, Qt.AlignmentFlag.AlignLeft)
+
+        h_layout.addWidget(self.number_input)
+        h_layout.setAlignment(self.number_input, Qt.AlignmentFlag.AlignRight)
+
+        v_layout.addLayout(h_layout)
+        v_layout.setAlignment(h_layout, Qt.AlignmentFlag.AlignCenter)
+
+        v_layout.addWidget(go_button)
+        v_layout.setAlignment(go_button, Qt.AlignmentFlag.AlignCenter)
+
         self.status_label = QLabel("")
-        layout.addWidget(self.status_label)
+        v_layout.addWidget(self.status_label)
+        v_layout.setAlignment(self.status_label, Qt.AlignmentFlag.AlignCenter)
 
-        self.setLayout(layout)
+        self.setLayout(v_layout)
+
+    def wrap_string_with_square_bracket(self, input_str):
+        input_str = input_str.strip()
+
+        if not input_str:
+            return "[]"
+
+        output_str = "[" + input_str + "]"
+        return output_str
 
     def write_array_to_module(self):
         # Retrieve the user input from the text box
         user_input = self.number_input.text().strip()
-        print(f"input field raw: {self.number_input}")
-        print(f"input field .text(): {self.number_input.text()}")
-        print(f"input field .text().strip(): {user_input}")
+        wrapped_list = self.wrap_string_with_square_bracket(user_input)
 
         try:
             # Convert the input string to an actual Python list using ast.literal_eval
-            array = ast.literal_eval(user_input)
+            array = ast.literal_eval(wrapped_list)
 
             if not isinstance(array, list):
                 raise ValueError("Input is not a valid list.")
