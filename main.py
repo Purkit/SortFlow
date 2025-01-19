@@ -56,7 +56,7 @@ class AlgorithmPage(QWidget):
         layout = QVBoxLayout()
         self.algorithm_list = QComboBox()
         self.algorithm_list.addItems(
-            ["Quick Sort", "Merge Sort", "Bubble Sort", "Insertion Sort"]
+            ["Bubble Sort", "Selection Sort", "Insertion Sort"]
         )
 
         select_button = QPushButton("Select Algorithm")
@@ -158,9 +158,9 @@ class ManimStdoutCapturePage(QWidget):
 
         self.process.finished.connect(self.on_process_finish)
 
-    def run_manim_process(self):
-        command_2 = ["ping", "-c", "4", "archlinux.org"]
-        command = [
+    def run_manim_process(self, algo):
+        command_test = ["ping", "-c", "4", "archlinux.org"]
+        command_1 = [
             "docker",
             "run",
             "--rm",
@@ -169,11 +169,38 @@ class ManimStdoutCapturePage(QWidget):
             "manimce:latest",
             "/bin/bash",
             "-c",
-            "cd /AnimDir/animations/ && manim array_visual.py",
+            "cd /AnimDir/animations/ && manim bubble.py",
+        ]
+        command_2 = [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "/home/deepy/DEV/SortFlow:/AnimDir",
+            "manimce:latest",
+            "/bin/bash",
+            "-c",
+            "cd /AnimDir/animations/ && manim selection.py",
+        ]
+        command_3 = [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            "/home/deepy/DEV/SortFlow:/AnimDir",
+            "manimce:latest",
+            "/bin/bash",
+            "-c",
+            "cd /AnimDir/animations/ && manim insertion.py",
         ]
 
         # Start the process
-        self.process.start(command[0], command[1:])
+        if algo == "Bubble Sort":
+            self.process.start(command_1[0], command_1[1:])
+        elif algo == "Selection Sort":
+            self.process.start(command_2[0], command_2[1:])
+        elif algo == "Insertion Sort":
+            self.process.start(command_3[0], command_3[1:])
 
     def handle_stdout_output(self):
         stdout_output = bytes(self.process.readAllStandardOutput()).decode(
@@ -207,7 +234,7 @@ class ManimStdoutCapturePage(QWidget):
         print(
             f"algorithm_selected string recieved by slot start_process: {algo}"
         )
-        self.run_manim_process()
+        self.run_manim_process(algo)
 
 
 class FinalPage(QWidget):
@@ -297,12 +324,27 @@ class SortFlowApp(QWidget):
         self.start_video_signal.emit()
 
     def fire_mpv(self):
-        subprocess.run(
-            [
-                "mpv",
-                "animations/media/videos/array_visual/1080p60/ProceduralArrayVisual.mp4",
-            ]
-        )
+        if self.selected_algorithm == "Bubble Sort":
+            subprocess.run(
+                [
+                    "mpv",
+                    "animations/media/videos/bubble/1080p60/BubbleSort.mp4",
+                ]
+            )
+        elif self.selected_algorithm == "Selection Sort":
+            subprocess.run(
+                [
+                    "mpv",
+                    "animations/media/videos/selection/1080p60/SelectionSort.mp4",
+                ]
+            )
+        elif self.selected_algorithm == "Insertion Sort":
+            subprocess.run(
+                [
+                    "mpv",
+                    "animations/media/videos/insertion/1080p60/InsertionSort.mp4",
+                ]
+            )
 
 
 if __name__ == "__main__":

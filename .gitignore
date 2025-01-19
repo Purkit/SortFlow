@@ -1,7 +1,7 @@
 exp/
 player/
 icon.png
-.mp4
+*.mp4
 user_array.py
 video_test.py
 animations/__pycache__/

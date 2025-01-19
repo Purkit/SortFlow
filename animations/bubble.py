@@ -29,6 +29,7 @@ from manim import (
 )
 from manim.mobject.logo import se
 from manim.mobject.text.text_mobject import remove_invisible_chars
+from user_array import my_array
 
 
 class BubbleSort(Scene):
@@ -178,7 +179,7 @@ class BubbleSort(Scene):
         self.justHighlight(0)
 
         # Array setup
-        nums = [9, 3, 0, 4, -2]
+        nums = my_array
         array = (
             VGroup(*[Square().scale(0.4) for _ in range(len(nums))])
             .arrange(RIGHT, buff=0.0)

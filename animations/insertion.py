@@ -11,6 +11,7 @@ from manim import (
     VGroup,
     Write,
 )
+from user_array import my_array
 
 
 class ArrayItem:
@@ -20,10 +21,10 @@ class ArrayItem:
         self.text = Integer(value)
 
 
-class Sort(Scene):
+class InsertionSort(Scene):
     def construct(self):
         # initialize the array
-        data = [2, 3, 1, 4, 7, 6, 5, 9, 8]
+        data = my_array
 
         # transform the array into ArrayItems
         dArray = []
