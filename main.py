@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
+    QProgressBar,
     QPushButton,
     QStackedWidget,
     QTextEdit,
@@ -34,7 +35,7 @@ class MainPage(QWidget):
 
         title_label = QLabel("SortFlow")
         title_label.setStyleSheet(
-            "font-size: 80px; font-weight: bold; text-align: center;"
+            "font-size: 80px; font-weight: bold; text-align: center; margin-bottom: 30px"
         )
 
         start_button = QPushButton("Start")
@@ -180,7 +181,7 @@ class InputPage(QWidget):
             QLabel {
                 font-size: 25px;
                 color: #ffffff;
-                margin-bottom: 20px;
+                margin-right: 20px;
             }
             QPushButton {
                 font-size: 16px;
@@ -279,14 +280,66 @@ class ManimStdoutCapturePage(QWidget):
     def __init__(self):
         super().__init__()
 
-        layout = QVBoxLayout()
+        style = """
+            QLabel {
+                font-size: 40px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            QProgressBar {
+                height: 30px;
+                width: 500px;
+                border-radius: 10px;
+                margin-top: 0px;
+                margin-bottom: 10px;
+            }
+            QProgressBar::chunk {
+                background-color: #4CAF50;
+                border-radius: 10px;
+            }
+            QTextEdit {
+                font-size: 14px;
+                padding: 10px;
+                border: 2px solid #ccc;
+                border-radius: 10px;
+            }
+        """
+        self.setStyleSheet(style)
+
+        request_text_label = QLabel("Generating Animation. Please Wait...")
+
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setRange(0, 0)  # Make it infinite (endless)
+        self.progress_bar.setTextVisible(False)  # Hide text in progress bar
 
         self.stdout_display = QTextEdit()
         self.stdout_display.setReadOnly(True)
 
-        layout.addWidget(self.stdout_display)
+        h_layout_1 = QHBoxLayout()
+        v_layout = QVBoxLayout()
 
-        self.setLayout(layout)
+        v_layout.addWidget(request_text_label)
+        v_layout.setAlignment(
+            request_text_label,
+            Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignBottom,
+        )
+
+        v_layout.addWidget(self.progress_bar)
+        v_layout.setAlignment(
+            self.progress_bar,
+            Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignCenter,
+        )
+
+        h_layout_1.addWidget(self.stdout_display)
+        h_layout_1.setAlignment(
+            self.stdout_display,
+            Qt.AlignmentFlag.AlignAbsolute,
+        )
+
+        v_layout.addLayout(h_layout_1)
+        v_layout.setAlignment(h_layout_1, Qt.AlignmentFlag.AlignAbsolute)
+
+        self.setLayout(v_layout)
 
         # Initialize QProcess
         self.process = QProcess(self)
@@ -338,6 +391,10 @@ class ManimStdoutCapturePage(QWidget):
             self.process.start(command_2[0], command_2[1:])
         elif algo == "Insertion Sort":
             self.process.start(command_3[0], command_3[1:])
+
+        # Start progress animation (endless)
+        self.progress_bar.setValue(0)
+        self.progress_bar.setRange(0, 0)  # Endless mode
 
     def handle_stdout_output(self):
         stdout_output = bytes(self.process.readAllStandardOutput()).decode(
